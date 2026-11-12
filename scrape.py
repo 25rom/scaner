@@ -33,10 +33,12 @@ PRICE_RES = [
 ]
 STOCK_RES = [
     re.compile(r"(?:in\s*stock|stock|available|availability|в\s*наличии|наличие|кол-?во|qty)"
-               r"\s*:?\s*(" + INT + ")", re.I),
+               r"[\s:|]*(" + INT + ")", re.I),
     re.compile(r"(" + INT + r")\s*(?:pcs\.?|шт\.?|left|items?|in\s*stock)(?![a-zа-я])", re.I),
 ]
-SOLD_RE = re.compile(r"(?:sold|sales|продано|продаж)\s*:?\s*(" + INT + r")(?:\s*(?:pcs\.?|pieces?|шт\.?))?", re.I)
+SOLD_RE = re.compile(r"(?:sold|sales|продано|продаж)[\s:|]*(" + INT + r")(?:\s*(?:pcs\.?|pieces?|шт\.?))?", re.I)
+NOISE_RE = re.compile(r"(?:cash\s?back|к[эе]шб[эе]к\w*|bonus|бонус\w*|discount|скидк\w*|save|выгода)[^|\d]{0,30}" + "(?:" + NUM + r")\s*(?:%|\$|USD|руб\.?|₽|RUB)?"
+                      r"|(?:/|per|for|за)\s*1\s*(?:pcs?\.?|pieces?|шт\.?|account|акк\w*)", re.I)
 OUT_RE = re.compile(r"out of stock|sold out|нет в наличии|закончил", re.I)
 
 
@@ -94,15 +96,18 @@ def extract_lots(html, base_url, usd_rub=83.0):
         t.decompose()
     lots, seen = [], set()
     for node in soup.find_all(string=True):
-        txt = str(node)
+        txt = NOISE_RE.sub(" ", str(node))
         if not find_prices(txt):
             continue
         card, el = None, node.parent
         for _ in range(8):
             if el is None or el.name in ("body", "html", "[document]"):
                 break
-            full = el.get_text(" | ", strip=True)
+            full = NOISE_RE.sub(" ", el.get_text(" | ", strip=True))
             prices = find_prices(full)
+            if not prices:
+                el = el.parent
+                continue
             if len({round(p[1], 4) for p in prices}) > 2 or len(full) > 1500:
                 break
             links = [a for a in el.find_all("a", href=True)
@@ -119,8 +124,7 @@ def extract_lots(html, base_url, usd_rub=83.0):
         if id(el) in seen:
             continue
         seen.add(id(el))
-        cand = links + heads
-        title_el = max(cand, key=lambda x: len(x.get_text(" ", strip=True)))
+        title_el = max(links, key=lambda x: len(x.get_text(" ", strip=True))) if links else heads[0]
         title = re.sub(r"\s+", " ", title_el.get_text(" ", strip=True))[:300]
         href = None
         if links:
@@ -219,7 +223,7 @@ def run():
 
     lots = [l for ls in by_src.values() for l in ls]
     out = {"updated": now, "usd_rub": rate, "status": status, "lots": lots}
-    js = json.dumps(out, ensure_ascii=False, indent=1)
+    js = json.dumps(out, ensure_ascii=False, separators=(",", ":"))
     f.write_text(js, encoding="utf-8")
     (DATA / "lots.js").write_text("window.LOTS_DATA = " + js + ";\n", encoding="utf-8")
     print("Всего лотов: %d" % len(lots))
@@ -243,6 +247,17 @@ def selftest():
     lots = extract_lots(html, "https://shop.test/cat")
     for l in lots:
         print(l)
+    html2 = """<table>
+      <tr><td><a href="/x">TikTok ADS Account Italy · Currency: USD · No VAT · Manual Payment</a><br>51<br>(1)<br>
+        Cashback amount: 0.02 USD<br>In stock: <b>25 pcs</b><br>Sold: <b>76 pcs</b></td><td>2.23 USD</td></tr>
+      <tr><td><a href="/y">Facebook (Asia), 2+ months from registration 2FA key and Profile UID included</a></td>
+        <td>213</td><td>0.83 $ / 1 pcs</td></tr>
+      <tr><td><a href="/z">Аккаунт TikTok ADS · Подтвержденный · Франция · Automatic Pay</a><br>Сумма кэшбека: 14 Руб.<br>
+        В наличии: <b>6 шт</b><br>Продаж: <b>233 шт</b></td><td>1 397 Руб.</td></tr></table>"""
+    l2 = extract_lots(html2, "https://shop.test/")
+    for l in l2:
+        print(l)
+    assert [(l["price"], l["stock"], l["sold"]) for l in l2] == [(2.23, 25, 76), (0.83, 213, None), (round(1397 / 83, 4), 6, 233)], l2
     exp = [(0.60, 206), (0.15, 2578), (round(195.75 / 83, 4), 14), (0.50, 4), (1.85, None), (16.99, 0)]
     got = [(l["price"], l["stock"]) for l in lots]
     assert got == exp, got
