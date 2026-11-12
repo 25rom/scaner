@@ -1,0 +1,65 @@
+{
+  "usd_rub": 83,
+  "delay_sec": 2,
+  "sources": [
+    {"name": "accsbulk", "pages": [
+      {"url": "https://accsbulk.com/all_ads/buy-instagram-accounts", "category": "Instagram"},
+      {"url": "https://accsbulk.com/all_ads/buy-facebook-accounts", "category": "Facebook"},
+      {"url": "https://accsbulk.com/all_ads/browse-tiktok-accounts-for-sale", "category": "TikTok"}]},
+    {"name": "accszone", "pages": [
+      {"url": "https://accszone.com/all_ads/buy-instagram-accounts", "category": "Instagram"},
+      {"url": "https://accszone.com/all_ads/buy-facebook-accounts", "category": "Facebook"}]},
+    {"name": "accfarm", "pages": [
+      {"url": "https://accfarm.org/product/254/fresh-instagram-accounts-with-2fa-authentication", "category": "Instagram"},
+      {"url": "https://accfarm.org/product/281/1-3-month-old-instagram-threads-account-with-2fa-key", "category": "Instagram"},
+      {"url": "https://accfarm.org/product/255/threads-accounts-with-2fa-key", "category": "Instagram"}]},
+    {"name": "hstockplus", "pages": [
+      {"url": "https://hstockplus.com/accounts/instagram-accounts", "category": "Instagram"},
+      {"url": "https://hstockplus.com/accounts/threads-accounts", "category": "Instagram Threads"}]},
+    {"name": "hstock.store", "pages": [
+      {"url": "https://hstock.store/category/facebook", "category": "Facebook"}]},
+    {"name": "hstock.us", "pages": [
+      {"url": "https://hstock.us/category/instagram", "category": "Instagram"}]},
+    {"name": "pvafactory", "pages": [
+      {"url": "https://pvafactory.store/en/", "category": ""}]},
+    {"name": "hstora", "pages": [
+      {"url": "https://hstora.com/en/category/facebook", "category": "Facebook"},
+      {"url": "https://hstora.com/en/category/instagram", "category": "Instagram"},
+      {"url": "https://hstora.com/en/category/tiktok", "category": "TikTok"},
+      {"url": "https://hstora.com/en/category/google", "category": "Gmail"}]},
+    {"name": "npprteam", "pages": [
+      {"url": "https://npprteam.shop/en/tiktok/tiktok-ads/personal-tiktok-ads-accounts/", "category": "TikTok Ads"},
+      {"url": "https://npprteam.shop/en/tiktok/tiktok-ads/tiktok-ads-accounts-with-bc/", "category": "TikTok Ads"},
+      {"url": "https://npprteam.shop/en/tiktok/tiktok-ads/verified-tiktok-ads-accounts/", "category": "TikTok Ads"},
+      {"url": "https://npprteam.shop/en/facebook/", "category": "Facebook"},
+      {"url": "https://npprteam.shop/en/instagram/", "category": "Instagram"},
+      {"url": "https://npprteam.shop/en/google/gmail-accounts/", "category": "Gmail"}]},
+    {"name": "ubarstore", "pages": [
+      {"url": "https://ubarstore.com/goods/info/2508517--tiktok-ads-akkaunty-geo-germaniya-de-postpey-ruchnaya-registraciya-kupon-na-6000-dollarov-dostup-k-pochte-kuki-vat-zapolnen-peredacha-v-antidetekt", "category": "TikTok Ads"},
+      {"url": "https://ubarstore.com/goods/info/2809927--tiktok-ads-akkaunty-geo-germaniya-de-proydena-verifikaciya-postpey-ruchnaya-registraciya-kupon-na-6000-dollarov-dostup-k-pochte-kuki-vat-zapolnen-peredacha-v-antidetekt", "category": "TikTok Ads"},
+      {"url": "https://ubarstore.com/goods/info/3067822--tiktok-ads-akkaunty-geo-belgiya-be-proydena-verifikaciya-postpey-ruchnaya-registraciya-dostup-k-pochte-kuki-vat-zapolnen-peredacha-v-antidetekt", "category": "TikTok Ads"},
+      {"url": "https://ubarstore.com/goods/info/2385098--tiktok-ads-akkaunty-geo-angliya-uk-postpey-ruchnaya-registraciya-dostup-k-pochte-kuki-vat-zapolnen-peredacha-v-antidetekt", "category": "TikTok Ads"}]},
+    {"name": "hq-accounts", "pages": [
+      {"url": "https://hq-accounts.com/en/?cat_id=9945", "category": "TikTok Ads"},
+      {"url": "https://hq-accounts.com/en/category/tiktok", "category": "TikTok"}]},
+    {"name": "accsmarket", "pages": [
+      {"url": "https://www.accsmarket.com/en/catalog/tiktok/tiktok-ads", "category": "TikTok Ads"},
+      {"url": "https://www.accsmarket.com/en/catalog/facebook", "category": "Facebook"},
+      {"url": "https://www.accsmarket.com/en/catalog/instagram", "category": "Instagram"}]},
+    {"name": "pro-ak", "pages": [
+      {"url": "https://pro-ak.store/en/category/tiktok-ads-accounts", "category": "TikTok Ads"}]},
+    {"name": "topshopads", "pages": [
+      {"url": "https://topshopads.com/en", "category": "TikTok Ads"}]},
+    {"name": "fire-accs", "pages": [
+      {"url": "https://fire-accs.biz/en/products/2fa-facebook-accounts-2018-2025-cookie-may-be-used-in-advertising", "category": "Facebook"},
+      {"url": "https://fire-accs.biz/en/products/tiktok-ads-united-kingdom-manual-payment-good-to-go-advertising-accounts", "category": "TikTok Ads"}]},
+    {"name": "stockrush", "pages": [
+      {"url": "https://stockrush.org/en/products/6a97f90fcda37a08b5eb3718", "category": "Instagram"},
+      {"url": "https://stockrush.org/en/products/6a97752fcda37a08b5e971eb", "category": "Facebook"}]},
+    {"name": "z2u", "pages": [
+      {"url": "https://www.z2u.com/facebook/accounts-5-15128", "category": "Facebook"},
+      {"url": "https://www.z2u.com/instagram/accounts-5-15129", "category": "Instagram"}]},
+    {"name": "accsmoll", "enabled": false, "note": "Сайт запрещает автоматическое чтение (robots.txt). Лоты вносятся вручную в data/manual.json.",
+     "pages": [{"url": "https://accsmoll.com/goods/tiktok", "category": "TikTok Ads"}]}
+  ]
+}
