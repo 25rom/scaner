@@ -81,7 +81,7 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--acc);font-size:14px}
   </details>
 </main>
 
-<script src="data/lots.js"></script>
+<script>document.write('<script src="data/lots.js?t='+Date.now()+'"><\/script>')</script>
 <script src="app.js"></script>
 <script>
 (function(){
@@ -109,12 +109,13 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--acc);font-size:14px}
   function lotTable(rows, withReason){
     if(!rows.length) return '';
     var h = '<div class="tw"><table><tr><th>Источник</th><th>Лот</th><th>Цена</th><th>Остаток</th><th>Продано</th><th>Снято</th>'+(withReason?'<th>Почему не учтён</th>':'<th>Совпадение</th>')+'</tr>';
+    var total = rows.length; if(withReason && total>40) rows = rows.slice(0,40);
     rows.forEach(function(r){
       h += '<tr><td class="n">'+esc(r.source)+'</td><td><a href="'+esc(safeUrl(r.url))+'" target="_blank" rel="noopener noreferrer">'+esc(r.title)+'</a></td>'+
         '<td class="n">'+usd(r.price)+(r.price_orig?' <span class="pos">('+esc(r.price_orig)+')</span>':'')+'</td>'+
         '<td class="n">'+(r.stock==null?'не виден':r.stock+' шт.')+'</td><td class="n">'+(r.sold==null?'—':r.sold)+'</td><td class="n">'+day(r.fetched)+'</td>'+
         '<td>'+(withReason?esc(r.reason):r.score+'%'+(r.notes&&r.notes.length?' · '+esc(r.notes.join(', ')):''))+'</td></tr>'});
-    return h+'</table></div>';
+    return h+'</table></div>'+(withReason && total>40?'<p class="hint">Показаны первые 40 из '+total+'.</p>':'');
   }
   function chips(q){
     var c=[]; if(q.platform)c.push(q.platform); if(q.threads)c.push('+ Threads'); if(q.tiktokAds||q.fbAds)c.push('Ads');
