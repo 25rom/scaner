@@ -1,0 +1,4 @@
+{
+ "_help": "Сюда можно вручную добавить лоты с площадок, которые парсер не читает (например accsmoll). Поля: source, title, price (USD), stock, url, category, fetched (дата ГГГГ-ММ-ДД).",
+ "lots": []
+}
