@@ -23,6 +23,16 @@
     brazil: /bra[sz]il|бразили/i,
     australia: /australia|австрали/i,
     singapore: /singapore|сингапур/i,
+    denmark: /denmark|дани[яи]/i, netherlands: /netherlands|holland|нидерланд/i, sweden: /sweden|швеци/i,
+    norway: /norway|норвеги/i, finland: /finland|финлянд/i, austria: /austria|австри[яи]/i,
+    switzerland: /switzerland|швейцар/i, portugal: /portugal|португал/i, romania: /romania|румын/i,
+    greece: /greece|греци/i, hungary: /hungary|венгри/i, czech: /czech|чехи/i, ireland: /ireland|ирланд/i,
+    turkey: /turkey|t[uü]rkiye|турци/i, uae: /\buae\b|emirates|оаэ|эмират/i, saudi: /saudi|саудов/i,
+    egypt: /egypt|егип/i, israel: /israel|израил/i, canada: /canada|канад/i, mexico: /mexico|мексик/i,
+    colombia: /colombia|колумби/i, argentina: /argentin|аргентин/i, indonesia: /indonesia|индонез/i,
+    thailand: /thailand|таиланд/i, philippines: /philippin|филиппин/i, malaysia: /malaysia|малайзи/i,
+    bangladesh: /bangladesh|бангладеш/i, china: /\bchina|кита[йя]/i, russia: /russia|росси/i,
+    newzealand: /new zealand|новая зеланд/i, nigeria: /nigeria|нигери/i,
     asia: /\basia|\bази[яи]/i,
     europe: /\beurope|\beu\b|европ/i
   };
@@ -39,8 +49,9 @@
     return v;
   }
 
-  function parseTitle(title, nowYear) {
-    nowYear = nowYear || new Date().getFullYear();
+  function parseTitle(title, now) {
+    now = now instanceof Date ? now : new Date();
+    var nowYear = now.getFullYear(), nowMonth = now.getMonth() + 1;
     var t = ' ' + String(title || '').replace(/[_|·•]+/g, ' ').replace(/\s+/g, ' ') + ' ';
     var a = { platform: null, threads: false, tiktokAds: false, bm: false, friends: 0,
       geo: null, age: null, twofa: false, pay: null, verified: false, fbAds: false };
@@ -57,7 +68,8 @@
     if (!a.platform && /discord/i.test(t)) a.platform = 'discord';
     if (!a.platform && /reddit/i.test(t)) a.platform = 'reddit';
     if (!a.platform && /linkedin/i.test(t)) a.platform = 'linkedin';
-    if (!a.platform && /outlook|hotmail/i.test(t)) a.platform = 'outlook';
+    if (!a.platform && /outlook|hotmail|\baol\b|yahoo|\bgmx\b|rambler|proton|mail\.ru|firstmail/i.test(t)) a.platform = 'mail';
+    a.service = /\b1 (like|follower|subscriber|view|video view|comment|repost)|накрутк|\bboost\b|smm panel/i.test(t);
 
     var ads = /\bads?\b|advertis|реклам/i.test(t);
     if (a.platform === 'tiktok') a.tiktokAds = ads;
@@ -80,18 +92,21 @@
     a.friends = friends >= 1000 ? 2 : friends >= 100 ? 1 : 0;
 
     // гео
-    for (var g in GEO) { if (GEO[g].test(t)) { a.geo = g; break; } }
+    var gpos = 1e9;   // берём гео, названное в тексте первым
+    for (var g in GEO) { var gm = GEO[g].exec(t); if (gm && gm.index < gpos) { gpos = gm.index; a.geo = g; } }
     if (!a.geo && MIX.test(t)) a.geo = 'mix';
 
     // возраст в месяцах
     var r1 = new RegExp('(\\d+(?:\\.\\d+)?)\\s*(?:-|–|to|до|\\+|/|\\s)\\s*(\\d+(?:\\.\\d+)?)\\s*' + UNIT, 'i');
     var r2 = new RegExp('(\\d+(?:\\.\\d+)?)\\s*\\+?\\s*' + UNIT, 'i');
     var ry = /\b(20[0-2]\d)(?:\s*[-–]\s*(20[0-2]\d))?\b/;
+    var rmy = /\b(?:\d{1,2}\.)?(0?[1-9]|1[0-2])\.(20[0-2]\d)\b/;
     if ((m = t.match(r1))) a.age = toMonths((parseFloat(m[1]) + parseFloat(m[2])) / 2, m[3]);
     else if ((m = t.match(r2))) a.age = toMonths(parseFloat(m[1]), m[2]);
+    else if ((m = t.match(rmy)) && +m[2] <= nowYear) a.age = Math.max(0.25, (nowYear - +m[2]) * 12 + (nowMonth - +m[1]));
     else if ((m = t.match(ry)) && +m[1] >= 2004 && +m[1] <= nowYear) {
       var y = m[2] ? (+m[1] + +m[2]) / 2 : +m[1];
-      a.age = Math.max(0.25, (nowYear - y) * 12);
+      a.age = Math.max(0.25, (nowYear - y) * 12 + (y === nowYear ? nowMonth / 2 : 0));
     } else if (/fresh|brand new|\bnew\b|свеж|авторег|autoreg/i.test(t)) a.age = 0.25;
     return a;
   }
@@ -100,6 +115,7 @@
   function matchLot(q, l, opt) {
     if (!q.platform) return { ok: false, why: 'платформа в запросе не распознана' };
     if (l.platform !== q.platform) return { ok: false, why: 'другая платформа' };
+    if (l.service) return { ok: false, why: 'услуга, не аккаунт' };
     if (q.threads !== l.threads) return { ok: false, why: q.threads ? 'без Threads' : 'с Threads' };
     if (q.platform === 'tiktok' && q.tiktokAds !== l.tiktokAds) return { ok: false, why: 'другой тип (Ads / обычный)' };
     if (q.bm !== l.bm) return { ok: false, why: q.bm ? 'без BM/БЦ' : 'с BM/БЦ' };
@@ -120,11 +136,13 @@
       score += 25 * ratio;
     } else if (q.age == null && l.age == null) score += 20;
     else if (q.age == null && l.age > 12) return { ok: false, why: 'другой возраст' };
+    else if (q.age != null && l.age == null) return { ok: false, why: 'возраст не указан' };
     else { score += 8; notes.push('возраст не указан'); }
 
-    if (q.twofa === l.twofa) score += 10; else notes.push('2FA отличается');
+    if (q.twofa && !l.twofa) return { ok: false, why: 'без 2FA' };
+    if (q.twofa === l.twofa) score += 10; else notes.push('с 2FA');
     if (q.pay && l.pay && q.pay !== l.pay) return { ok: false, why: 'другой тип оплаты' };
-    if (q.verified !== l.verified) { score -= 15; notes.push('верификация отличается'); }
+    if (q.verified !== l.verified) return { ok: false, why: 'верификация отличается' };
     if (q.fbAds !== l.fbAds) { score -= 10; }
     if (score < opt.minScore) return { ok: false, why: 'слабое совпадение' };
     return { ok: true, score: Math.round(score), notes: notes };
@@ -139,11 +157,15 @@
   function analyze(title, cost, data, opt) {
     opt = Object.assign({ minStock: 10, minScore: 55, strictGeo: false, includeUnknown: false,
       maxAgeDays: 14, cheapMargin: 60, dearMargin: 25, now: new Date() }, opt || {});
-    var nowYear = opt.now.getFullYear();
-    var q = parseTitle(title, nowYear);
+    var q = parseTitle(title, opt.now);
     var used = [], skipped = [];
     (data.lots || []).forEach(function (lot) {
-      var l = parseTitle(lot.title + ' ' + (lot.category || ''), nowYear);
+      var l = parseTitle(lot.title, opt.now);
+      if (!l.platform && lot.category) {   // платформы нет в названии — берём из раздела каталога
+        var c = parseTitle(lot.category, opt.now);
+        l.platform = c.platform; l.threads = l.threads || c.threads;
+        if (c.platform === 'tiktok') l.tiktokAds = c.tiktokAds;
+      }
       var m = matchLot(q, l, opt);
       if (!m.ok) return;
       var row = Object.assign({}, lot, { score: m.score, notes: m.notes });
@@ -154,12 +176,14 @@
       else if (lot.stock != null && lot.stock < opt.minStock) { row.reason = 'малый остаток (' + lot.stock + ' шт.)'; skipped.push(row); }
       else used.push(row);
     });
-    // один и тот же лот на сайтах-зеркалах считается один раз
+    // один и тот же лот на сайтах-зеркалах и одна цена у одной площадки считаются один раз
+    used.sort(function (a, b) { return b.score - a.score || (b.stock || 0) - (a.stock || 0); });
     var seenKey = {};
     used = used.filter(function (r) {
-      var k = r.title.toLowerCase().replace(/[^a-zа-я0-9]+/g, '') + '@' + r.price;
+      var k = r.title.toLowerCase().replace(/[^a-zа-я0-9]+/g, '') + '@' + r.price, k2 = r.source + '@' + r.price;
       if (seenKey[k]) { r.reason = 'дубль лота с ' + seenKey[k]; skipped.push(r); return false; }
-      seenKey[k] = r.source; return true;
+      if (seenKey[k2]) { r.reason = 'та же цена у этой площадки уже учтена'; skipped.push(r); return false; }
+      seenKey[k] = r.source; seenKey[k2] = r.source; return true;
     });
     if (used.length >= 4) {
       var med0 = median(used.map(function (r) { return r.price; }));
