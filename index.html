@@ -75,7 +75,7 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--acc);font-size:14px}
     <summary>Как считается</summary>
     <p class="line">1. Из названия берутся признаки: платформа, Threads, тип кабинета, гео, возраст, 2FA, оплата, верификация, друзья.</p>
     <p class="line">2. В базе ищутся лоты с теми же признаками. Лот с другим гео, возрастом или комплектом не подходит.</p>
-    <p class="line">3. В расчёт идут только лоты с подтверждённым остатком не ниже порога. Нет в наличии, остаток не виден или остаток мал — цена считается нерепрезентативной и показывается отдельно с причиной.</p>
+    <p class="line">3. В расчёт идут только лоты с подтверждённым остатком не ниже порога. Нет в наличии, остаток не виден или остаток мал — цена считается нерепрезентативной и показывается отдельно с причиной. Исключение — площадки, которые остаток не показывают вообще (в sources.json помечены «ignore_stock»): их лоты учитываются без проверки количества.</p>
     <p class="line">4. Низ и верх — минимальная и максимальная цена среди учтённых лотов. Среднее — обычное среднее цен этих лотов (не по количеству штук).</p>
     <p class="line">5. Маржа = (средняя розница − закупка) / средняя розница. Наценка = (средняя розница − закупка) / закупка.</p>
   </details>
@@ -113,7 +113,7 @@ details{margin-top:10px}summary{cursor:pointer;color:var(--acc);font-size:14px}
     rows.forEach(function(r){
       h += '<tr><td class="n">'+esc(r.source)+'</td><td><a href="'+esc(safeUrl(r.url))+'" target="_blank" rel="noopener noreferrer">'+esc(r.title)+'</a></td>'+
         '<td class="n">'+usd(r.price)+(r.price_orig?' <span class="pos">('+esc(r.price_orig)+')</span>':'')+'</td>'+
-        '<td class="n">'+(r.stock==null?'не виден':r.stock+' шт.')+'</td><td class="n">'+(r.sold==null?'—':r.sold)+'</td><td class="n">'+day(r.fetched)+'</td>'+
+        '<td class="n">'+(r.stock_na?'не учитывается':r.stock==null?'не виден':r.stock+' шт.')+'</td><td class="n">'+(r.sold==null?'—':r.sold)+'</td><td class="n">'+day(r.fetched)+'</td>'+
         '<td>'+(withReason?esc(r.reason):r.score+'%'+(r.notes&&r.notes.length?' · '+esc(r.notes.join(', ')):''))+'</td></tr>'});
     return h+'</table></div>'+(withReason && total>40?'<p class="hint">Показаны первые 40 из '+total+'.</p>':'');
   }
