@@ -89,7 +89,7 @@ def find_stock(text, table_row=False):
     return None
 
 
-def extract_lots(html, base_url, usd_rub=83.0):
+def extract_lots(html, base_url, usd_rub=83.0, bare_stock=True):
     """Универсальный разбор: ищет «карточки» — блоки с одной ценой и названием."""
     soup = BeautifulSoup(html, "html.parser")
     for t in soup(["script", "style", "noscript", "svg", "s", "del", "strike"]):
@@ -142,7 +142,7 @@ def extract_lots(html, base_url, usd_rub=83.0):
             "title": title,
             "price": price,
             "price_orig": orig,
-            "stock": find_stock(rest, el.name == "tr"),
+            "stock": find_stock(rest, bare_stock and el.name == "tr"),
             "sold": to_int(sold.group(1)) if sold else None,
             "url": href or base_url,
         })
@@ -201,7 +201,10 @@ def run():
                 if r.status_code != 200:
                     err = "HTTP %s" % r.status_code
                     continue
-                for l in extract_lots(r.text, url, rate):
+                no_stock = bool(src.get("ignore_stock"))
+                for l in extract_lots(r.text, url, rate, src.get("bare_stock", True) and not no_stock):
+                    if no_stock:   # площадка не показывает остаток: количество не учитывается
+                        l["stock"], l["stock_na"] = None, True
                     l.update(source=name, category=cat, fetched=now)
                     got.append(l)
             except requests.RequestException as e:
