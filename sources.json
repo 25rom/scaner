@@ -59,7 +59,19 @@
     {"name": "z2u", "pages": [
       {"url": "https://www.z2u.com/facebook/accounts-5-15128", "category": "Facebook"},
       {"url": "https://www.z2u.com/instagram/accounts-5-15129", "category": "Instagram"}]},
-    {"name": "accsmoll", "enabled": false, "note": "Сайт запрещает автоматическое чтение (robots.txt). Лоты вносятся вручную в data/manual.json.",
-     "pages": [{"url": "https://accsmoll.com/goods/tiktok", "category": "TikTok Ads"}]}
+    {"name": "darkstore", "ignore_stock": true, "note": "Остаток в каталоге не подписан: лоты учитываются без проверки количества.", "pages": [
+      {"url": "https://darkstore.bz/category/facebook", "category": "Facebook"},
+      {"url": "https://darkstore.bz/category/facebook?page=2", "category": "Facebook"},
+      {"url": "https://darkstore.bz/category/facebook?page=3", "category": "Facebook"},
+      {"url": "https://darkstore.bz/category/instagram", "category": "Instagram"},
+      {"url": "https://darkstore.bz/category/instagram?page=2", "category": "Instagram"},
+      {"url": "https://darkstore.bz/category/instagram?page=3", "category": "Instagram"},
+      {"url": "https://darkstore.bz/category/tiktok", "category": "TikTok"},
+      {"url": "https://darkstore.bz/category/tiktok?page=2", "category": "TikTok"},
+      {"url": "https://darkstore.bz/category/tiktok?page=3", "category": "TikTok"},
+      {"url": "https://darkstore.bz/category/gmail", "category": "Gmail"},
+      {"url": "https://darkstore.bz/category/google", "category": "Google"}]},
+    {"name": "accsmoll", "enabled": false, "note": "Сайт запрещает автоматическое чтение (robots.txt). Лоты вносятся вручную в data/manual.json.", "pages": [
+      {"url": "https://accsmoll.com/goods/tiktok", "category": "TikTok Ads"}]}
   ]
 }
