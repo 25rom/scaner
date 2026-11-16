@@ -172,7 +172,7 @@
       var days = lot.fetched ? (opt.now - new Date(lot.fetched)) / 864e5 : 0;
       if (days > opt.maxAgeDays) { row.reason = 'данные устарели (' + Math.round(days) + ' дн.)'; skipped.push(row); }
       else if (lot.stock === 0) { row.reason = 'нет в наличии'; skipped.push(row); }
-      else if (lot.stock == null && !opt.includeUnknown) { row.reason = 'остаток не виден'; skipped.push(row); }
+      else if (lot.stock == null && !lot.stock_na && !opt.includeUnknown) { row.reason = 'остаток не виден'; skipped.push(row); }
       else if (lot.stock != null && lot.stock < opt.minStock) { row.reason = 'малый остаток (' + lot.stock + ' шт.)'; skipped.push(row); }
       else used.push(row);
     });
